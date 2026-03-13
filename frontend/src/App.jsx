@@ -3,6 +3,8 @@ import { Routes, Route, Link, useSearchParams, useLocation } from 'react-router-
 import Dashboard from './components/Dashboard';
 import ApprovalQueue from './components/ApprovalQueue';
 import Analytics from './components/Analytics';
+import Privacy from './components/Privacy';
+import Terms from './components/Terms';
 
 function App() {
   const [searchParams] = useSearchParams();
@@ -53,8 +55,20 @@ function App() {
           <Route path="/" element={<Dashboard userId={userId} />} />
           <Route path="/queue" element={<ApprovalQueue userId={userId} />} />
           <Route path="/analytics" element={<Analytics userId={userId} />} />
+          <Route path="/privacy" element={<Privacy />} />
+          <Route path="/terms" element={<Terms />} />
         </Routes>
       </main>
+
+      <footer className="app-footer">
+        <div className="footer-content">
+          <span>© 2026 Review Response AI</span>
+          <div className="footer-links">
+            <Link to="/privacy">Privacy Policy</Link>
+            <Link to="/terms">Terms of Service</Link>
+          </div>
+        </div>
+      </footer>
     </div>
   );
 }

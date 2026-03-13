@@ -866,3 +866,55 @@ tbody tr:last-child td {
 @media (prefers-color-scheme: dark) {
   /* Can be enabled later if needed */
 }
+
+/* ============================================
+   App Footer
+   ============================================ */
+.app-footer {
+  background: white;
+  border-top: 1px solid var(--gray-200);
+  padding: 20px 24px;
+  margin-top: auto;
+}
+
+.footer-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.footer-content span {
+  color: var(--gray-500);
+  font-size: 0.875rem;
+}
+
+.footer-links {
+  display: flex;
+  gap: 24px;
+}
+
+.footer-links a {
+  color: var(--gray-500);
+  text-decoration: none;
+  font-size: 0.875rem;
+  transition: color var(--transition);
+}
+
+.footer-links a:hover {
+  color: var(--primary);
+}
+
+@media (max-width: 768px) {
+  .footer-content {
+    flex-direction: column;
+    text-align: center;
+  }
+  
+  .footer-links {
+    gap: 16px;
+  }
+}
