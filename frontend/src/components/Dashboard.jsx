@@ -29,51 +29,106 @@ function Dashboard({ userId }) {
   };
 
   if (loading) {
-    return <div className="loading">Loading...</div>;
+    return (
+      <div className="loading">
+        <div className="loading-spinner"></div>
+        <span>Loading your dashboard...</span>
+      </div>
+    );
   }
 
   if (!userId || businesses.length === 0) {
     return (
-      <div className="connect-prompt">
+      <div className="connect-prompt fade-in">
+        <div className="icon">🔗</div>
         <h2>Connect Your Google Business Profile</h2>
-        <p>Start managing your reviews with AI-powered responses</p>
-        <button className="btn btn-primary" onClick={connectGoogle}>
+        <p>Start managing your reviews with AI-powered responses. Save time and improve customer satisfaction.</p>
+        
+        <button className="btn btn-primary btn-lg" onClick={connectGoogle}>
+          <span>🔐</span>
           Connect Google Account
         </button>
+        
+        <div className="connect-features">
+          <div className="connect-feature">
+            <div className="connect-feature-icon">🤖</div>
+            <span className="connect-feature-text">AI generates professional responses automatically</span>
+          </div>
+          <div className="connect-feature">
+            <div className="connect-feature-icon">✅</div>
+            <span className="connect-feature-text">Review and approve before posting</span>
+          </div>
+          <div className="connect-feature">
+            <div className="connect-feature-icon">📊</div>
+            <span className="connect-feature-text">Track sentiment and response metrics</span>
+          </div>
+        </div>
       </div>
     );
   }
 
   return (
-    <div>
+    <div className="fade-in">
+      {/* Stats Overview */}
       <div className="stats-grid">
         <div className="stat-card">
+          <div className="stat-icon">📝</div>
           <div className="stat-value">24</div>
           <div className="stat-label">Total Reviews</div>
+          <div className="stat-trend up">↑ 12% this month</div>
         </div>
         <div className="stat-card">
+          <div className="stat-icon">✉️</div>
           <div className="stat-value">18</div>
           <div className="stat-label">Responses Sent</div>
+          <div className="stat-trend up">↑ 8% this month</div>
         </div>
         <div className="stat-card">
+          <div className="stat-icon">⭐</div>
           <div className="stat-value">4.6</div>
           <div className="stat-label">Average Rating</div>
+          <div className="stat-trend up">↑ 0.2 this month</div>
         </div>
         <div className="stat-card">
+          <div className="stat-icon">🎯</div>
           <div className="stat-value">75%</div>
           <div className="stat-label">Response Rate</div>
+          <div className="stat-trend up">↑ 5% this month</div>
         </div>
       </div>
 
+      {/* Connected Businesses */}
       <div className="card">
-        <h2>Connected Businesses</h2>
+        <h2>
+          🏢 Connected Businesses
+        </h2>
+        
         {businesses.map(business => (
           <div key={business.id} className="review-item">
             <div className="review-header">
-              <span className="review-author">{business.business_name}</span>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                <div className="review-author-avatar">
+                  {business.business_name?.charAt(0) || 'B'}
+                </div>
+                <span className="review-author">{business.business_name}</span>
+              </div>
+              <span style={{ 
+                background: 'var(--success-light)', 
+                color: 'var(--success)',
+                padding: '4px 12px',
+                borderRadius: 'var(--radius-full)',
+                fontSize: '0.8rem',
+                fontWeight: 600
+              }}>
+                ✓ Connected
+              </span>
             </div>
-            <p style={{ color: '#6b7280' }}>
-              Connected on {new Date(business.created_at).toLocaleDateString()}
+            <p style={{ color: 'var(--gray-500)', fontSize: '0.9rem', marginLeft: 48 }}>
+              Connected on {new Date(business.created_at).toLocaleDateString('en-US', { 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric' 
+              })}
             </p>
           </div>
         ))}

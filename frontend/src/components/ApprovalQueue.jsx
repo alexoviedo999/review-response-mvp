@@ -12,7 +12,6 @@ function ApprovalQueue({ userId }) {
 
   const fetchQueue = async () => {
     try {
-      // Mock business_id for MVP
       const res = await fetch('/api/responses/queue/1');
       const data = await res.json();
       setQueue(data);
@@ -93,73 +92,125 @@ function ApprovalQueue({ userId }) {
   };
 
   const renderStars = (rating) => {
-    return '⭐'.repeat(rating);
+    const stars = [];
+    for (let i = 1; i <= 5; i++) {
+      stars.push(
+        <span key={i} style={{ 
+          color: i <= rating ? '#fbbf24' : 'var(--gray-300)',
+          fontSize: '1rem'
+        }}>
+          ★
+        </span>
+      );
+    }
+    return stars;
+  };
+
+  const getRatingBadge = (rating) => {
+    if (rating >= 4) return { bg: 'var(--success-light)', color: 'var(--success)' };
+    if (rating >= 3) return { bg: 'var(--warning-light)', color: 'var(--warning)' };
+    return { bg: 'var(--danger-light)', color: 'var(--danger)' };
   };
 
   if (loading) {
-    return <div className="loading">Loading queue...</div>;
+    return (
+      <div className="loading">
+        <div className="loading-spinner"></div>
+        <span>Loading approval queue...</span>
+      </div>
+    );
   }
 
   if (queue.length === 0) {
     return (
-      <div className="empty-state">
-        <h3>All caught up! 🎉</h3>
-        <p>No pending reviews to respond to</p>
+      <div className="empty-state fade-in">
+        <div className="icon">🎉</div>
+        <h3>All caught up!</h3>
+        <p>No pending reviews to respond to. Great job!</p>
       </div>
     );
   }
 
   return (
-    <div className="card">
-      <h2>Approval Queue ({queue.length} pending)</h2>
+    <div className="card fade-in">
+      <h2>
+        📋 Approval Queue
+        <span className="badge">{queue.length} pending</span>
+      </h2>
       
-      {queue.map(item => (
-        <div key={item.id} className="review-item">
-          <div className="review-header">
-            <span className="review-author">{item.author_name}</span>
-            <span className="review-rating">{renderStars(item.rating)}</span>
-          </div>
-          
-          <p className="review-text">"{item.text}"</p>
-          
-          <div className="response-box">
-            <strong>AI Response:</strong>
-            {editingId === item.id ? (
-              <div>
-                <textarea
-                  value={editText}
-                  onChange={(e) => setEditText(e.target.value)}
-                />
-                <div className="response-actions">
-                  <button className="btn btn-primary" onClick={() => handleSaveEdit(item.id)}>
-                    Save
-                  </button>
-                  <button className="btn" onClick={() => setEditingId(null)}>
-                    Cancel
-                  </button>
+      {queue.map(item => {
+        const ratingBadge = getRatingBadge(item.rating);
+        
+        return (
+          <div key={item.id} className="review-item">
+            <div className="review-header">
+              <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                <div className="review-author-avatar">
+                  {item.author_name?.charAt(0) || '?'}
+                </div>
+                <div>
+                  <span className="review-author">{item.author_name}</span>
+                  <div className="review-rating" style={{ marginTop: 4 }}>
+                    {renderStars(item.rating)}
+                  </div>
                 </div>
               </div>
-            ) : (
-              <div>
-                <p style={{ marginTop: '8px' }}>
-                  {item.edited_text || item.generated_text}
-                </p>
-                <div className="response-actions">
-                  <button className="btn btn-success" onClick={() => handleApprove(item.id)}>
-                    ✓ Approve
-                  </button>
-                  <button className="btn" onClick={() => handleEdit(item)}>
-                    Edit
-                  </button>
-                  <button className="btn btn-danger" onClick={() => handleReject(item.id)}>
-                    ✕ Reject
-                  </button>
-                </div>
+              <span style={{ 
+                background: ratingBadge.bg, 
+                color: ratingBadge.color,
+                padding: '4px 12px',
+                borderRadius: 'var(--radius-full)',
+                fontSize: '0.8rem',
+                fontWeight: 600
+              }}>
+                {item.rating} star{item.rating !== 1 ? 's' : ''}
+              </span>
+            </div>
+            
+            <p className="review-text">"{item.text}"</p>
+            
+            <div className="response-box">
+              <div className="response-box-header">
+                <span>🤖</span>
+                AI Generated Response
               </div>
-            )}
+              
+              {editingId === item.id ? (
+                <div>
+                  <textarea
+                    value={editText}
+                    onChange={(e) => setEditText(e.target.value)}
+                    placeholder="Edit the response..."
+                  />
+                  <div className="response-actions">
+                    <button className="btn btn-primary" onClick={() => handleSaveEdit(item.id)}>
+                      💾 Save Changes
+                    </button>
+                    <button className="btn btn-outline" onClick={() => setEditingId(null)}>
+                      Cancel
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                <div>
+                  <p>{item.edited_text || item.generated_text}</p>
+                  <div className="response-actions">
+                    <button className="btn btn-success" onClick={() => handleApprove(item.id)}>
+                      ✓ Approve & Send
+                    </button>
+                    <button className="btn btn-outline" onClick={() => handleEdit(item)}>
+                      ✏️ Edit
+                    </button>
+                    <button className="btn btn-danger" onClick={() => handleReject(item.id)}>
+                      ✕ Reject
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
           </div>
-        </div>
-      ))}
+        );
+      })}
     </div>
   );
 }
