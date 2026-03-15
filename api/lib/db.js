@@ -2,7 +2,8 @@ const { Pool } = require('pg');
 
 // Singleton pool for serverless
 let pool;
-let connectionFailed = false;
+let connectionFailedTime = 0;
+const RETRY_INTERVAL_MS = 60000; // Retry connection every 60 seconds after failure
 
 function getPool() {
   if (!pool) {
@@ -14,18 +15,23 @@ function getPool() {
       query_timeout: 5000
     });
     
-    // Mark connection as failed on error
     pool.on('error', (err) => {
       console.error('Pool error:', err.message);
-      connectionFailed = true;
     });
   }
   return pool;
 }
 
-// Check if database is configured and working
+// Check if database is configured
 function isDatabaseConfigured() {
-  return !!process.env.DATABASE_URL && !connectionFailed;
+  return !!process.env.DATABASE_URL;
+}
+
+// Check if we should try the real DB (not in cooldown after failure)
+function shouldTryRealDB() {
+  if (!isDatabaseConfigured()) return false;
+  if (connectionFailedTime === 0) return true;
+  return Date.now() - connectionFailedTime > RETRY_INTERVAL_MS;
 }
 
 // Mock data for testing without database
@@ -98,7 +104,6 @@ async function mockQuery(sql, params) {
     const responseId = params?.[1] || params?.[0];
     const response = mockData.responses.find(r => r.id === parseInt(responseId));
     if (!response) return { rows: [] };
-    // Extract status from SQL
     if (sqlLower.includes('approved')) response.status = 'approved';
     if (sqlLower.includes('rejected')) response.status = 'rejected';
     return { rows: [{ id: responseId, ...response }] };
@@ -125,12 +130,12 @@ async function mockQuery(sql, params) {
 // Unified query function that handles mock mode
 async function query(sql, params) {
   // If no DATABASE_URL, use mock immediately
-  if (!process.env.DATABASE_URL) {
+  if (!isDatabaseConfigured()) {
     return mockQuery(sql, params);
   }
   
-  // If we already know connection failed, use mock
-  if (connectionFailed) {
+  // If in cooldown after failure, use mock
+  if (!shouldTryRealDB()) {
     return mockQuery(sql, params);
   }
   
@@ -138,21 +143,30 @@ async function query(sql, params) {
   try {
     const pool = getPool();
     const result = await pool.query(sql, params);
+    // Reset failure time on success
+    connectionFailedTime = 0;
     return result;
   } catch (error) {
-    // On connection error, switch to mock mode
-    if (error.code === 'ENOTFOUND' || error.code === 'ECONNREFUSED' || error.code === 'ETIMEDOUT') {
-      console.log('Database unreachable, switching to mock mode');
-      connectionFailed = true;
+    // On connection error, record failure time and use mock
+    if (error.code === 'ENOTFOUND' || error.code === 'ECONNREFUSED' || error.code === 'ETIMEDOUT' || error.code === 'ECONNRESET') {
+      console.log('Database unreachable, switching to mock mode:', error.message);
+      connectionFailedTime = Date.now();
       return mockQuery(sql, params);
     }
     throw error;
   }
 }
 
-// Force mock mode (for testing)
-function enableMockMode() {
-  connectionFailed = true;
+// Get current mode (for health checks)
+function getCurrentMode() {
+  if (!isDatabaseConfigured()) return 'mock';
+  if (!shouldTryRealDB()) return 'mock';
+  return 'live';
 }
 
-module.exports = { getPool, query, isDatabaseConfigured, mockData, enableMockMode };
+// Force mock mode (for testing)
+function enableMockMode() {
+  connectionFailedTime = Date.now();
+}
+
+module.exports = { getPool, query, isDatabaseConfigured, getCurrentMode, mockData, enableMockMode };

@@ -1,4 +1,4 @@
-const { query, isDatabaseConfigured } = require('./lib/db');
+const { query, isDatabaseConfigured, getCurrentMode } = require('./lib/db');
 const { isOpenAIConfigured } = require('./lib/openai');
 
 // Extended health check with DB connectivity
@@ -8,7 +8,6 @@ module.exports = async (req, res) => {
   const health = {
     status: 'ok',
     timestamp: new Date().toISOString(),
-    mode: isDatabaseConfigured() ? 'live' : 'mock',
     checks: {}
   };
 
@@ -21,13 +20,14 @@ module.exports = async (req, res) => {
     health.checks.database = {
       status: 'ok',
       latency: `${latency}ms`,
-      mode: isDatabaseConfigured() ? 'live' : 'mock'
+      mode: getCurrentMode()
     };
   } catch (error) {
     health.status = 'degraded';
     health.checks.database = {
       status: 'error',
-      message: error.message
+      message: error.message,
+      mode: 'mock'
     };
   }
 
