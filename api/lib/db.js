@@ -147,9 +147,17 @@ async function query(sql, params) {
     connectionFailedTime = 0;
     return result;
   } catch (error) {
+    // Log the actual error for debugging
+    console.log('DB error:', error.code, error.message);
     // On connection error, record failure time and use mock
     if (error.code === 'ENOTFOUND' || error.code === 'ECONNREFUSED' || error.code === 'ETIMEDOUT' || error.code === 'ECONNRESET') {
-      console.log('Database unreachable, switching to mock mode:', error.message);
+      console.log('Database unreachable, switching to mock mode');
+      connectionFailedTime = Date.now();
+      return mockQuery(sql, params);
+    }
+    // For other errors (like missing tables), also fall back to mock in production
+    if (process.env.NODE_ENV === 'production') {
+      console.log('Database error, falling back to mock:', error.message);
       connectionFailedTime = Date.now();
       return mockQuery(sql, params);
     }
