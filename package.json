@@ -7,20 +7,25 @@
     "server": "node backend/server.js",
     "client": "cd frontend && npm run dev",
     "build": "cd frontend && npm install && npm run build",
-    "start": "node backend/server.js"
+    "start": "node backend/server.js",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage"
   },
   "dependencies": {
-    "express": "^4.18.2",
+    "body-parser": "^1.20.2",
     "cors": "^2.8.5",
     "dotenv": "^16.3.1",
-    "pg": "^8.11.3",
-    "openai": "^4.20.1",
+    "express": "^4.18.2",
     "googleapis": "^128.0.0",
-    "resend": "^2.0.0",
-    "body-parser": "^1.20.2"
+    "openai": "^4.20.1",
+    "pg": "^8.11.3",
+    "resend": "^2.0.0"
   },
   "devDependencies": {
-    "concurrently": "^8.2.2"
+    "concurrently": "^8.2.2",
+    "supertest": "^7.2.2",
+    "vitest": "^4.1.0"
   },
   "engines": {
     "node": "20.x"
