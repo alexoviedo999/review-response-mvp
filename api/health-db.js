@@ -1,4 +1,5 @@
 const { query, isDatabaseConfigured } = require('./lib/db');
+const { isOpenAIConfigured } = require('./lib/openai');
 
 // Extended health check with DB connectivity
 module.exports = async (req, res) => {
@@ -30,9 +31,10 @@ module.exports = async (req, res) => {
     };
   }
 
-  // Check OpenAI (just verify key exists)
+  // Check OpenAI
   health.checks.openai = {
-    status: process.env.OPENAI_API_KEY ? 'configured' : 'missing'
+    status: isOpenAIConfigured() ? 'configured' : 'mock',
+    mode: isOpenAIConfigured() ? 'live' : 'mock'
   };
 
   const statusCode = health.status === 'ok' ? 200 : 503;
