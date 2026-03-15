@@ -170,3 +170,4 @@ function enableMockMode() {
 }
 
 module.exports = { getPool, query, isDatabaseConfigured, getCurrentMode, mockData, enableMockMode };
+// Build: 1773607935
