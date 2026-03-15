@@ -1,4 +1,4 @@
-const { getPool } = require('../lib/db');
+const { query } = require('../lib/db');
 
 module.exports = async (req, res) => {
   // Handle CORS
@@ -21,8 +21,7 @@ module.exports = async (req, res) => {
     const { edited_text } = req.body;
 
     try {
-      const pool = getPool();
-      const result = await pool.query(
+      const result = await query(
         `UPDATE responses SET edited_text = $1 WHERE id = $2 RETURNING *`,
         [edited_text, id]
       );

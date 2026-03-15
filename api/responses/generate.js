@@ -1,4 +1,4 @@
-const { getPool } = require('../lib/db');
+const { query } = require('../lib/db');
 const { generateResponse } = require('../lib/openai');
 
 module.exports = async (req, res) => {
@@ -22,10 +22,8 @@ module.exports = async (req, res) => {
   }
 
   try {
-    const pool = getPool();
-
     // Get review details
-    const reviewResult = await pool.query(
+    const reviewResult = await query(
       `SELECT r.*, b.business_name FROM reviews r
        JOIN businesses b ON r.business_id = b.id
        WHERE r.id = $1`,
@@ -42,7 +40,7 @@ module.exports = async (req, res) => {
     const generatedText = await generateResponse(review);
 
     // Store response
-    const responseResult = await pool.query(
+    const responseResult = await query(
       `INSERT INTO responses (review_id, generated_text, status)
        VALUES ($1, $2, 'pending')
        ON CONFLICT (review_id) DO UPDATE SET

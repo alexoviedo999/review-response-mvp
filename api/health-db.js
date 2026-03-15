@@ -1,4 +1,4 @@
-const { getPool } = require('./lib/db');
+const { query, isDatabaseConfigured } = require('./lib/db');
 
 // Extended health check with DB connectivity
 module.exports = async (req, res) => {
@@ -7,19 +7,20 @@ module.exports = async (req, res) => {
   const health = {
     status: 'ok',
     timestamp: new Date().toISOString(),
+    mode: isDatabaseConfigured() ? 'live' : 'mock',
     checks: {}
   };
 
   // Check database
   try {
-    const pool = getPool();
     const start = Date.now();
-    const result = await pool.query('SELECT 1 as test');
+    const result = await query('SELECT 1 as test');
     const latency = Date.now() - start;
     
     health.checks.database = {
       status: 'ok',
-      latency: `${latency}ms`
+      latency: `${latency}ms`,
+      mode: isDatabaseConfigured() ? 'live' : 'mock'
     };
   } catch (error) {
     health.status = 'degraded';

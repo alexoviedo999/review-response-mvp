@@ -1,0 +1,4 @@
+# Vercel ignore - exclude test files from deployment
+**/*.test.js
+**/*.spec.js
+vitest.config.js

@@ -1,4 +1,4 @@
-const { getPool } = require('../lib/db');
+const { query } = require('../lib/db');
 
 module.exports = async (req, res) => {
   // Handle CORS
@@ -16,8 +16,7 @@ module.exports = async (req, res) => {
   }
 
   try {
-    const pool = getPool();
-    const result = await pool.query(
+    const result = await query(
       `SELECT r.*, resp.id as response_id, resp.generated_text, resp.edited_text, resp.status
        FROM reviews r
        JOIN responses resp ON r.id = resp.review_id

@@ -1,4 +1,4 @@
-const { getPool } = require('../../lib/db');
+const { query } = require('../../lib/db');
 
 module.exports = async (req, res) => {
   // Handle CORS
@@ -21,10 +21,8 @@ module.exports = async (req, res) => {
   }
 
   try {
-    const pool = getPool();
-
     // Get response details
-    const result = await pool.query(
+    const result = await query(
       `SELECT r.*, resp.*, b.business_name
        FROM responses resp
        JOIN reviews r ON resp.review_id = r.id
@@ -41,7 +39,7 @@ module.exports = async (req, res) => {
     const textToPost = data.edited_text || data.generated_text;
 
     // Update status
-    await pool.query(
+    await query(
       `UPDATE responses SET status = 'approved', approved_at = CURRENT_TIMESTAMP WHERE id = $1`,
       [id]
     );
