@@ -79,8 +79,8 @@ function Dashboard({ userId }) {
     // Logged in but no businesses connected - show onboarding
     return (
       <div className="connect-prompt fade-in">
-        <img src="/logo.jpg" alt="Feedback Responder" className="connect-logo" />
         <div className="welcome-badge">✓ Account Created</div>
+        <img src="/logo.jpg" alt="Feedback Responder" className="connect-logo" />
         <h2>Connect Your Google Business Profile</h2>
         <p>You're logged in! Now connect your Google Business Profile to start managing reviews with AI-powered responses.</p>
         

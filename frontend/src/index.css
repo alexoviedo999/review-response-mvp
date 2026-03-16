@@ -642,14 +642,15 @@ main {
 }
 
 .connect-prompt .welcome-badge {
-  display: inline-block;
+  display: block;
+  width: fit-content;
+  margin: 0 auto var(--space-4);
   background: var(--success-light);
   color: var(--success);
   padding: var(--space-2) var(--space-4);
   border-radius: var(--radius-full);
   font-weight: 700;
   font-size: 0.85rem;
-  margin-bottom: var(--space-4);
   border: 3px solid var(--border);
 }
 
