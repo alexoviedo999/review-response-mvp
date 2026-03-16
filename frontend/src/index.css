@@ -641,6 +641,18 @@ main {
   box-shadow: var(--shadow);
 }
 
+.connect-prompt .welcome-badge {
+  display: inline-block;
+  background: var(--success-light);
+  color: var(--success);
+  padding: var(--space-2) var(--space-4);
+  border-radius: var(--radius-full);
+  font-weight: 700;
+  font-size: 0.85rem;
+  margin-bottom: var(--space-4);
+  border: 3px solid var(--border);
+}
+
 .connect-prompt h2 {
   font-size: 2rem;
   font-weight: 800;
