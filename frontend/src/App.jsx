@@ -23,8 +23,7 @@ function App() {
       <header>
         <div className="header-content">
           <h1>
-            <span>⭐</span>
-            Review Response AI
+            Feedback Responder
           </h1>
           
           <button 
@@ -62,7 +61,7 @@ function App() {
 
       <footer className="app-footer">
         <div className="footer-content">
-          <span>© 2026 Review Response AI</span>
+          <span>© 2026 Feedback Responder</span>
           <div className="footer-links">
             <Link to="/privacy">Privacy Policy</Link>
             <Link to="/terms">Terms of Service</Link>

@@ -22,7 +22,7 @@ function Terms() {
           boxShadow: 'var(--shadow-sm)'
         }}>
           <p style={{ margin: 0, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em', fontSize: '0.9rem' }}>
-            ⚖️ By using Review Response AI, you agree to these terms.
+            ⚖️ By using Feedback Responder, you agree to these terms.
           </p>
         </div>
 
@@ -43,7 +43,7 @@ function Terms() {
               1. Acceptance of Terms
             </h3>
             <p style={{ color: 'var(--fg-muted)', lineHeight: 1.8, marginTop: 'var(--space-4)' }}>
-              By accessing or using Review Response AI ("Service"), you agree to be bound by these Terms of 
+              By accessing or using Feedback Responder ("Service"), you agree to be bound by these Terms of 
               Service and all applicable laws and regulations. If you do not agree with any of these terms, 
               you are prohibited from using or accessing this Service.
             </p>
@@ -65,7 +65,7 @@ function Terms() {
               2. Description of Service
             </h3>
             <p style={{ color: 'var(--fg-muted)', lineHeight: 1.8, marginTop: 'var(--space-4)' }}>
-              Review Response AI provides an AI-powered platform for generating and managing responses to 
+              Feedback Responder provides an AI-powered platform for generating and managing responses to 
               customer reviews. The Service includes automated response generation, approval workflows, 
               analytics, and integrations with third-party platforms like Google Business Profile.
             </p>
