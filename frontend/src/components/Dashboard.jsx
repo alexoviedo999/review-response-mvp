@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 
 function Dashboard({ userId }) {
   const [businesses, setBusinesses] = useState([]);
@@ -62,6 +63,12 @@ function Dashboard({ userId }) {
             <div className="connect-feature-icon">📊</div>
             <span className="connect-feature-text">Track sentiment and response metrics</span>
           </div>
+        </div>
+        
+        <div className="connect-footer-links">
+          <Link to="/privacy">Privacy Policy</Link>
+          <span>•</span>
+          <Link to="/terms">Terms of Service</Link>
         </div>
       </div>
     );
