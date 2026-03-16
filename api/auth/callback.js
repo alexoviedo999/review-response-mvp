@@ -32,7 +32,9 @@ module.exports = async (req, res) => {
     const user = userResult.rows[0];
 
     // Redirect to dashboard with user ID
-    const baseUrl = process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'http://localhost:5173';
+    const baseUrl = process.env.NODE_ENV === 'production' 
+      ? 'https://feedbackresponder.com' 
+      : 'http://localhost:5173';
     res.redirect(`${baseUrl}/?user_id=${user.id}`);
   } catch (error) {
     console.error('OAuth callback error:', error);
