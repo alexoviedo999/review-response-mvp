@@ -40,7 +40,7 @@ function Dashboard({ userId }) {
   if (!userId || businesses.length === 0) {
     return (
       <div className="connect-prompt fade-in">
-        <div className="icon">🔗</div>
+        <img src="/logo.jpg" alt="Feedback Responder" className="connect-logo" />
         <h2>Connect Your Google Business Profile</h2>
         <p>Start managing your reviews with AI-powered responses. Save time and improve customer satisfaction.</p>
         
