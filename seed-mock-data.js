@@ -14,10 +14,10 @@ async function seedDatabase() {
       `INSERT INTO users (email) VALUES ($1) 
        ON CONFLICT (email) DO UPDATE SET email = EXCLUDED.email
        RETURNING id`,
-      ['demo@reviewresponse.ai']
+      ['demo@feedbackresponder.com']
     );
     const userId = userResult.rows[0].id;
-    console.log(`✅ Created user: demo@reviewresponse.ai (id: ${userId})`);
+    console.log(`✅ Created user: demo@feedbackresponder.com (id: ${userId})`);
 
     // Create test business
     const bizResult = await pool.query(

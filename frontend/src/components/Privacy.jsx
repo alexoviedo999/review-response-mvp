@@ -172,8 +172,8 @@ function Privacy() {
             </h3>
             <p style={{ color: 'var(--fg-muted)', lineHeight: 1.8, marginTop: 'var(--space-4)' }}>
               Questions? Reach out at{' '}
-              <a href="mailto:privacy@reviewresponse.ai" style={{ color: 'var(--primary)', fontWeight: 700, background: 'var(--yellow)', padding: '0.125rem 0.375rem', border: '2px solid var(--border)' }}>
-                privacy@reviewresponse.ai
+              <a href="mailto:privacy@feedbackresponder.com" style={{ color: 'var(--primary)', fontWeight: 700, background: 'var(--yellow)', padding: '0.125rem 0.375rem', border: '2px solid var(--border)' }}>
+                privacy@feedbackresponder.com
               </a>
             </p>
           </section>
