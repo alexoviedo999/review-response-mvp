@@ -38,7 +38,8 @@ function Dashboard({ userId }) {
     );
   }
 
-  if (!userId || businesses.length === 0) {
+  if (!userId) {
+    // Not logged in - show landing page
     return (
       <div className="connect-prompt fade-in">
         <img src="/logo.jpg" alt="Feedback Responder" className="connect-logo" />
@@ -48,6 +49,44 @@ function Dashboard({ userId }) {
         <button className="btn btn-primary btn-lg" onClick={connectGoogle}>
           <span>🔐</span>
           Connect Google Account
+        </button>
+        
+        <div className="connect-features">
+          <div className="connect-feature">
+            <div className="connect-feature-icon">🤖</div>
+            <span className="connect-feature-text">AI generates professional responses automatically</span>
+          </div>
+          <div className="connect-feature">
+            <div className="connect-feature-icon">✅</div>
+            <span className="connect-feature-text">Review and approve before posting</span>
+          </div>
+          <div className="connect-feature">
+            <div className="connect-feature-icon">📊</div>
+            <span className="connect-feature-text">Track sentiment and response metrics</span>
+          </div>
+        </div>
+        
+        <div className="connect-footer-links">
+          <Link to="/privacy">Privacy Policy</Link>
+          <span>•</span>
+          <Link to="/terms">Terms of Service</Link>
+        </div>
+      </div>
+    );
+  }
+
+  if (businesses.length === 0) {
+    // Logged in but no businesses connected - show onboarding
+    return (
+      <div className="connect-prompt fade-in">
+        <img src="/logo.jpg" alt="Feedback Responder" className="connect-logo" />
+        <div className="welcome-badge">✓ Account Created</div>
+        <h2>Connect Your Google Business Profile</h2>
+        <p>You're logged in! Now connect your Google Business Profile to start managing reviews with AI-powered responses.</p>
+        
+        <button className="btn btn-primary btn-lg" onClick={connectGoogle}>
+          <span>🔗</span>
+          Connect Business Profile
         </button>
         
         <div className="connect-features">
