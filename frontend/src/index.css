@@ -83,13 +83,6 @@ body {
   color: var(--fg);
   line-height: 1.6;
   min-height: 100vh;
-  
-  /* Grid pattern background */
-  background-image: 
-    linear-gradient(var(--border) 1px, transparent 1px),
-    linear-gradient(90deg, var(--border) 1px, transparent 1px);
-  background-size: 40px 40px;
-  background-position: -1px -1px;
 }
 
 ::selection {
@@ -128,12 +121,13 @@ body {
    Header / Navigation
    ============================================ */
 header {
-  background: var(--bg);
-  border-bottom: 4px solid var(--border);
+  background: var(--bento-card-bg);
+  border-bottom: 1px solid var(--bento-card-border);
   padding: 0 var(--space-6);
   position: sticky;
   top: 0;
   z-index: 100;
+  backdrop-filter: blur(10px);
 }
 
 .header-content {
@@ -372,7 +366,8 @@ main {
   justify-content: center;
   gap: var(--space-2);
   padding: var(--space-3) var(--space-5);
-  border: 3px solid var(--border);
+  border: 1px solid var(--bento-card-border);
+  border-radius: var(--radius-sm);
   font-weight: 700;
   font-size: 0.9rem;
   font-family: inherit;
@@ -616,9 +611,10 @@ main {
 .connect-prompt {
   text-align: center;
   padding: var(--space-16) var(--space-10);
-  background: var(--bg);
-  border: 4px solid var(--border);
-  box-shadow: var(--shadow-xl);
+  background: var(--bento-card-bg);
+  border: 1px solid var(--bento-card-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--bento-shadow);
   max-width: 600px;
   margin: var(--space-12) auto;
   position: relative;
@@ -645,8 +641,9 @@ main {
   width: 200px;
   max-width: 80%;
   margin-bottom: var(--space-6);
-  border: 4px solid var(--border);
-  box-shadow: var(--shadow);
+  border: 1px solid var(--bento-card-border);
+  border-radius: var(--radius);
+  box-shadow: var(--bento-shadow);
 }
 
 .connect-prompt .welcome-badge {
@@ -694,28 +691,29 @@ main {
   align-items: center;
   gap: var(--space-4);
   padding: var(--space-4);
-  background: var(--bg-alt);
-  border: 3px solid var(--border);
-  box-shadow: var(--shadow-sm);
-  transition: all var(--transition);
+  background: var(--bg);
+  border: 1px solid var(--bento-card-border);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--bento-shadow);
+  transition: all 0.2s ease;
 }
 
 .connect-feature:hover {
-  transform: translate(-2px, -2px);
-  box-shadow: var(--shadow);
+  transform: translateY(-2px);
+  box-shadow: var(--bento-shadow-hover);
 }
 
 .connect-feature-icon {
   width: 48px;
   height: 48px;
-  border: 3px solid var(--border);
+  border: 1px solid var(--bento-card-border);
+  border-radius: var(--radius-sm);
   background: var(--lime);
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 1.3rem;
   flex-shrink: 0;
-  box-shadow: var(--shadow-sm);
 }
 
 .connect-feature-text {
@@ -730,7 +728,7 @@ main {
   gap: var(--space-4);
   margin-top: var(--space-8);
   padding-top: var(--space-6);
-  border-top: 3px solid var(--border);
+  border-top: 1px solid var(--bento-card-border);
 }
 
 .connect-footer-links a {
@@ -907,8 +905,8 @@ tbody tr:last-child td {
    App Footer
    ============================================ */
 .app-footer {
-  background: var(--fg);
-  border-top: 4px solid var(--border);
+  background: var(--bento-card-bg);
+  border-top: 1px solid var(--bento-card-border);
   padding: var(--space-5) var(--space-6);
   margin-top: auto;
 }
@@ -924,7 +922,7 @@ tbody tr:last-child td {
 }
 
 .footer-content span {
-  color: var(--bg);
+  color: var(--fg-muted);
   font-size: 0.85rem;
   font-weight: 600;
 }
@@ -935,7 +933,7 @@ tbody tr:last-child td {
 }
 
 .footer-links a {
-  color: var(--cyan);
+  color: var(--primary);
   text-decoration: none;
   font-size: 0.85rem;
   font-weight: 700;
@@ -945,7 +943,7 @@ tbody tr:last-child td {
 }
 
 .footer-links a:hover {
-  color: var(--lime);
+  color: var(--primary-hover);
 }
 
 /* ============================================
