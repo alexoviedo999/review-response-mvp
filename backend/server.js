@@ -2,6 +2,7 @@ require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
+const session = require('express-session');
 const { Pool } = require('pg');
 
 const authRoutes = require('./routes/auth');
@@ -11,6 +12,18 @@ const analyticsRoutes = require('./routes/analytics');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+
+// Session configuration for secure OAuth flows
+app.use(session({
+  secret: process.env.SESSION_SECRET || 'dev-secret-change-in-production',
+  resave: false,
+  saveUninitialized: false,
+  cookie: {
+    secure: process.env.NODE_ENV === 'production',
+    httpOnly: true,
+    maxAge: 10 * 60 * 1000 // 10 minutes - sufficient for OAuth flow
+  }
+}));
 
 // Database connection
 const pool = new Pool({

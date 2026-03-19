@@ -196,6 +196,27 @@ nav a.active {
   box-shadow: var(--shadow-sm);
 }
 
+/* Header legal links */
+.header-legal {
+  display: flex;
+  gap: var(--space-4);
+  margin-left: auto;
+  align-items: center;
+}
+
+.header-legal a {
+  color: var(--fg);
+  text-decoration: none;
+  font-size: 0.875rem;
+  padding: var(--space-1) var(--space-2);
+  opacity: 0.7;
+  transition: opacity var(--transition);
+}
+
+.header-legal a:hover {
+  opacity: 1;
+}
+
 /* Mobile menu button */
 .mobile-menu-btn {
   display: none;
@@ -1032,6 +1053,24 @@ tbody tr:last-child td {
   }
   
   nav.open {
+    display: flex;
+  }
+
+  .header-legal {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: var(--bg);
+    border-bottom: 4px solid var(--border);
+    flex-direction: row;
+    justify-content: center;
+    gap: var(--space-6);
+    padding: var(--space-3) var(--space-4);
+  }
+
+  .header-content.menu-open .header-legal {
     display: flex;
   }
   

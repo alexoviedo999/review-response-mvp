@@ -21,22 +21,22 @@ function App() {
   return (
     <div className="app">
       <header>
-        <div className="header-content">
+        <div className={`header-content${mobileMenuOpen ? ' menu-open' : ''}`}>
           <h1>
             Feedback Responder
           </h1>
-          
-          <button 
+
+          <button
             className="mobile-menu-btn"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             aria-label="Toggle menu"
           >
             {mobileMenuOpen ? '✕' : '☰'}
           </button>
-          
+
           <nav className={mobileMenuOpen ? 'open' : ''}>
             {navLinks.map(link => (
-              <Link 
+              <Link
                 key={link.path}
                 to={link.path}
                 className={location.pathname === link.path ? 'active' : ''}
@@ -46,6 +46,11 @@ function App() {
               </Link>
             ))}
           </nav>
+
+          <div className="header-legal">
+            <Link to="/privacy">Privacy Policy</Link>
+            <Link to="/terms">Terms of Use</Link>
+          </div>
         </div>
       </header>
 
