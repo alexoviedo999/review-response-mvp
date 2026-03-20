@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Routes, Route, Link, useSearchParams, useLocation } from 'react-router-dom';
 import Dashboard from './components/Dashboard';
 import ApprovalQueue from './components/ApprovalQueue';
@@ -11,6 +11,11 @@ function App() {
   const location = useLocation();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const userId = searchParams.get('user_id');
+
+  // Scroll to top on route change
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [location.pathname]);
 
   const navLinks = [
     { path: '/', label: 'Dashboard' },
@@ -34,22 +39,24 @@ function App() {
             {mobileMenuOpen ? '✕' : '☰'}
           </button>
 
-          <nav className={mobileMenuOpen ? 'open' : ''}>
-            {navLinks.map(link => (
-              <Link
-                key={link.path}
-                to={link.path}
-                className={location.pathname === link.path ? 'active' : ''}
-                onClick={() => setMobileMenuOpen(false)}
-              >
-                {link.label}
-              </Link>
-            ))}
-          </nav>
+          <div className="header-nav">
+            <nav>
+              {navLinks.map(link => (
+                <Link
+                  key={link.path}
+                  to={link.path}
+                  className={location.pathname === link.path ? 'active' : ''}
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  {link.label}
+                </Link>
+              ))}
+            </nav>
 
-          <div className="header-legal">
-            <Link to="/privacy">Privacy Policy</Link>
-            <Link to="/terms">Terms of Use</Link>
+            <div className="header-legal">
+              <Link to="/privacy">Privacy Policy</Link>
+              <Link to="/terms">Terms of Use</Link>
+            </div>
           </div>
         </div>
       </header>
