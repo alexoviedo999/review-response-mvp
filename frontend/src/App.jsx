@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Routes, Route, Link, useSearchParams, useLocation } from 'react-router-dom';
 import Dashboard from './components/Dashboard';
 import ApprovalQueue from './components/ApprovalQueue';
@@ -12,6 +12,11 @@ function App() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const userId = searchParams.get('user_id');
 
+  // Scroll to top on route change
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [location.pathname]);
+
   const navLinks = [
     { path: '/', label: 'Dashboard' },
     { path: '/queue', label: 'Approval Queue' },
@@ -21,31 +26,38 @@ function App() {
   return (
     <div className="app">
       <header>
-        <div className="header-content">
+        <div className={`header-content${mobileMenuOpen ? ' menu-open' : ''}`}>
           <h1>
             Feedback Responder
           </h1>
-          
-          <button 
+
+          <button
             className="mobile-menu-btn"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             aria-label="Toggle menu"
           >
             {mobileMenuOpen ? '✕' : '☰'}
           </button>
-          
-          <nav className={mobileMenuOpen ? 'open' : ''}>
-            {navLinks.map(link => (
-              <Link 
-                key={link.path}
-                to={link.path}
-                className={location.pathname === link.path ? 'active' : ''}
-                onClick={() => setMobileMenuOpen(false)}
-              >
-                {link.label}
-              </Link>
-            ))}
-          </nav>
+
+          <div className="header-nav">
+            <nav>
+              {navLinks.map(link => (
+                <Link
+                  key={link.path}
+                  to={link.path}
+                  className={location.pathname === link.path ? 'active' : ''}
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  {link.label}
+                </Link>
+              ))}
+            </nav>
+
+            <div className="header-legal">
+              <Link to="/privacy">Privacy Policy</Link>
+              <Link to="/terms">Terms of Use</Link>
+            </div>
+          </div>
         </div>
       </header>
 

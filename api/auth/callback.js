@@ -1,19 +1,48 @@
 const { google } = require('googleapis');
 const { getPool } = require('../lib/db');
 
+// Helper to parse cookies from request
+function parseCookies(cookieHeader) {
+  if (!cookieHeader) return {};
+  const cookies = {};
+  cookieHeader.split(';').forEach(cookie => {
+    const [name, value] = cookie.split('=').map(c => c.trim());
+    if (name) cookies[name] = value;
+  });
+  return cookies;
+}
+
 module.exports = async (req, res) => {
-  const { code, error } = req.query;
-  
+  const { code, error, state: returnedState } = req.query;
+  const cookieHeader = req.headers.cookie;
+  const cookies = parseCookies(cookieHeader);
+
   if (error) {
     console.error('OAuth error:', error);
-    const baseUrl = process.env.NODE_ENV === 'production' 
-      ? 'https://feedbackresponder.com' 
+    const baseUrl = process.env.NODE_ENV === 'production'
+      ? 'https://feedbackresponder.com'
       : 'http://localhost:5173';
+    // Clear cookies on error
+    res.setHeader('Set-Cookie', [
+      'oauth_state=; Path=/; HttpOnly; SameSite=Strict; Max-Age=0',
+      'code_verifier=; Path=/; HttpOnly; SameSite=Strict; Max-Age=0'
+    ]);
     return res.redirect(`${baseUrl}/?error=${encodeURIComponent(error)}`);
   }
-  
+
   if (!code) {
     return res.status(400).json({ error: 'No authorization code provided' });
+  }
+
+  // Verify state parameter to prevent CSRF attacks
+  const expectedState = cookies.oauth_state;
+  if (!expectedState || returnedState !== expectedState) {
+    return res.status(400).json({ error: 'Invalid state parameter - possible CSRF attack' });
+  }
+
+  const codeVerifier = cookies.code_verifier;
+  if (!codeVerifier) {
+    return res.status(400).json({ error: 'Missing code verifier - possible CSRF attack' });
   }
 
   try {
@@ -22,6 +51,11 @@ module.exports = async (req, res) => {
       process.env.GOOGLE_CLIENT_SECRET,
       process.env.GOOGLE_REDIRECT_URI || 'https://feedbackresponder.com/api/auth/callback'
     );
+
+    // Use PKCE code verifier
+    oauth2Client.setCredentials({
+      code_verifier: codeVerifier
+    });
 
     const { tokens } = await oauth2Client.getToken(code);
     oauth2Client.setCredentials(tokens);
@@ -44,14 +78,14 @@ module.exports = async (req, res) => {
     try {
       const mybusiness = google.mybusinessbusinessinformation({ version: 'v1', auth: oauth2Client });
       const accounts = await mybusiness.accounts.list();
-      
+
       if (accounts.data.accounts && accounts.data.accounts.length > 0) {
         for (const account of accounts.data.accounts) {
           // Store business with tokens
           await pool.query(
             `INSERT INTO businesses (user_id, google_account_id, business_name, google_access_token, google_refresh_token, token_expires_at)
              VALUES ($1, $2, $3, $4, $5, $6)
-             ON CONFLICT (google_account_id) DO UPDATE SET 
+             ON CONFLICT (google_account_id) DO UPDATE SET
                google_access_token = $4,
                google_refresh_token = $5,
                token_expires_at = $6`,
@@ -79,9 +113,16 @@ module.exports = async (req, res) => {
       businessCreated = true;
     }
 
-    // Redirect to dashboard with user ID
-    const baseUrl = process.env.NODE_ENV === 'production' 
-      ? 'https://feedbackresponder.com' 
+    // Clear OAuth cookies
+    const cookieOptions = '; Path=/; HttpOnly; SameSite=Strict; Max-Age=0';
+    res.setHeader('Set-Cookie', [
+      `oauth_state=${cookieOptions}`,
+      `code_verifier=${cookieOptions}`
+    ]);
+
+    // Redirect to dashboard with user ID (NOT exposing access token in URL)
+    const baseUrl = process.env.NODE_ENV === 'production'
+      ? 'https://feedbackresponder.com'
       : 'http://localhost:5173';
     res.redirect(`${baseUrl}/?user_id=${user.id}${businessCreated ? '&connected=1' : ''}`);
   } catch (error) {
